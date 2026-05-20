@@ -26,6 +26,42 @@ This work builds upon the patented pre-semantic trajectory governance framework.
 
 -----
 
+## What This Repository Claims
+
+Before reading further, the scope of the Morrison Framework’s claims should be explicit:
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║   1. The framework is a runtime governance layer —           ║
+║      pre-execution enforcement for tool-calling AI agents.   ║
+║                                                              ║
+║   2. Results are demonstrated within tested environments.    ║
+║      They are not universal proof.                           ║
+║                                                              ║
+║   3. Empirical validation (129,857 evaluations, 0 FP,       ║
+║      0 FN) reflects consistency across tested scenarios      ║
+║      and model planners — not coverage of all possible       ║
+║      attack surfaces.                                        ║
+║                                                              ║
+║   4. The framework is open to adversarial evaluation         ║
+║      and independent replication. The codebase, test         ║
+║      suites, and limitations are publicly available.         ║
+║                                                              ║
+║   5. A self-critical evaluation (CRITICAL_EVALUATION.md)     ║
+║      and quantified limitations analysis (LIMITATIONS.md)    ║
+║      are published alongside the codebase.                   ║
+║                                                              ║
+║   6. Independent red-teaming is the appropriate next         ║
+║      step and is the posture this repository is built for.   ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+This section exists so that technical readers can orient quickly. The framework makes specific, bounded, testable claims. It does not claim to solve alignment. It does not claim universal safety. It claims to prevent catastrophic executable trajectories from reaching forbidden states within tested environments — and it publishes the evidence, the code, and the limitations for anyone to verify or refute.
+
+-----
+
 ## 1. The Timeline
 
 The sequence matters. This was not a single dismissive email. It was a multi-month evaluation that reversed its own trajectory.
@@ -112,9 +148,221 @@ The core invariant:
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
+A note on these results: the framework remains open to criticism. The metrics above are within tested environments — they are not universal guarantees. Empirical validation is not universal proof. The 129,857 evaluations demonstrate consistency across tested scenarios and model planners; they do not claim coverage of all possible attack surfaces. The self-critical evaluation (CRITICAL_EVALUATION.md) and quantified limitations analysis (LIMITATIONS.md) are published alongside the codebase for exactly this reason.
+
+The question is not whether the framework is beyond criticism. It is whether the evaluation engaged with the framework at all.
+
 -----
 
-## 3. What Was and Was Not Evaluated
+## 3. The Evaluator’s Exact Words
+
+The full dismissal email, verbatim:
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                                                              │
+│  "To be completely transparent and direct: I really          │
+│   cannot point you toward a team, advise on project          │
+│   pipelines or funding routes at present."                   │
+│                                                              │
+│  "As I tried to indicate previously, the kind of thing       │
+│   you're aiming for when working within mechanistic          │
+│   interpretability needs to be embedded into the model       │
+│   itself. The way you've explored this so far is a           │
+│   framework that operates on the API level at the            │
+│   prompt-response boundary. There's nothing here that        │
+│   actually demonstrates an operationalisation of the         │
+│   model's latent space. That's why I suggested working       │
+│   with a local small model that runs on a device during      │
+│   our call. You cannot implement the boundary constraints    │
+│   you're describing with an API -- you need to work with     │
+│   the model natively."                                       │
+│                                                              │
+│  "This is still something of a toy model and quite far       │
+│   from anything that would get serious attention or          │
+│   funding. Also, to be frank, sharing a folder link with     │
+│   images and videos shot on your phone isn't something       │
+│   people will take seriously."                               │
+│                                                              │
+│  "Since you're obviously very passionate and driven, I       │
+│   want to offer a piece of candid professional advice.       │
+│   Bridging the gap between ambitious, high-level concepts    │
+│   such as geometric control theory and industry-level        │
+│   machine-learning deployment requires rigorous technical    │
+│   expertise. I'd highly recommend enrolling in a formal      │
+│   computer science and/or applied mathematics degree         │
+│   program to get the foundations you need for this kind      │
+│   of work. If formal higher ed isn't accessible, there       │
+│   are plenty of online accreditations available instead.     │
+│   Vibe coding small demo models is fine for exploring        │
+│   ideas, but for a serious attempt at this type of work,     │
+│   you need to understand the mathematical nuts and bolts     │
+│   of what you're doing and be able to document it            │
+│   rigorously. You'll get a lot further with a couple of      │
+│   courses on linear algebra and introductory computer        │
+│   science."                                                  │
+│                                                              │
+│  "Leave the project where it is for now as an early          │
+│   exploratory attempt, and focus instead on solidifying      │
+│   the fundamentals you need."                                │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+```
+
+These are the evaluator’s exact words. They are presented here without editorialisation so the reader can assess what was and was not addressed.
+
+-----
+
+## 4. Claim by Claim: The Email Against the Evidence
+
+Each of the evaluator’s claims is presented below alongside the specific, publicly verifiable evidence from the repository. No interpretation is added. The reader can assess the gap.
+
+-----
+
+**Claim 1: “This is still something of a toy model”**
+
+The repository contains:
+
+|Evidence                         |Detail                                                                                       |
+|:--------------------------------|:--------------------------------------------------------------------------------------------|
+|Evaluations                      |129,857 across 4 model architectures                                                         |
+|False positives / False negatives|0 / 0 in current evaluation suites                                                           |
+|Deterministic test suites        |18 suites, 171 cases, 100% pass, byte-identical on replay                                    |
+|Enforcement hierarchy            |7 layers: A_safe → V2 → V3 → V4 → V4+ → V5 → V5+                                             |
+|V5+ adversarial harness          |240 scenarios, 8 attack types, 6 domains, 240/240                                            |
+|Production integrations          |OpenAI, Claude, LangChain, AutoGen, MCP, FastAPI                                             |
+|Deployment                       |Deployable as HTTP middleware (~10 lines with FastAPI)                                       |
+|Reproducibility                  |Clone the repo. Run `python3 quickstart.py`. No arguments, no dependencies beyond the package|
+
+A toy model does not have 18 deterministic test suites. It does not have a 7-layer enforcement hierarchy. It does not produce byte-identical results on replay. It does not have production adapters for six integration platforms. These properties are verifiable by cloning the repository.
+
+-----
+
+**Claim 2: “A framework that operates on the API level at the prompt-response boundary”**
+
+The framework does not operate at the prompt-response boundary. It operates between the planner and the tool runtime — intercepting executable trajectories before any action occurs. The architecture diagram from the README:
+
+```
+┌─────────────┐
+│  AGENT      │
+│  LLM/planner│
+└──────┬──────┘
+       │ proposed tool call
+       ▼
+┌──────────────────────────────────────┐
+│  GOVERNANCE LAYER · pre-execution    │
+│                                      │
+│  A_safe → V2 → V3 → V4 → V4+ → V5  │
+└──────┬───────────────┬───────────────┘
+       │               │
+       ▼               ▼
+   ┌────────┐    ┌─────────────────┐
+   │ PERMIT │    │ BLOCK           │
+   │ → Tool │    │ → Audit log     │
+   │ Runtime│    │ → Never executes│
+   └────────┘    └─────────────────┘
+```
+
+The governance layer evaluates trajectory geometry, not prompt content. It does not inspect what the model says. It inspects what the model is about to do. This is a structural distinction, not a semantic one.
+
+-----
+
+**Claim 3: “You cannot implement the boundary constraints you’re describing with an API – you need to work with the model natively”**
+
+The cross-model validation table from the README:
+
+|Model            |Evaluations|False Positives|False Negatives|
+|:----------------|:---------:|:-------------:|:-------------:|
+|GPT-4o           |9,095      |0              |0              |
+|Qwen2.5-0.5B     |10,000     |0              |0              |
+|Qwen2.5-7B       |438        |0              |0              |
+|Llama-3.1-8B     |318        |0              |0              |
+|Banking benchmark|10,000     |0              |0              |
+|Stress test      |100,000    |0              |0              |
+
+The governance layer was unchanged across all tested model planners. The planner changed. The model changed. The prompt changed. The attack vector changed. The governance layer did not change. And the invariant held. This is the empirical evidence that boundary constraints can be implemented externally — because they were, and the results are reproducible.
+
+Model-agnosticism is the architectural contribution, not the limitation. The framework does not need access to the model’s latent space because safety enforcement occurs at the trajectory layer, not the weight layer.
+
+-----
+
+**Claim 4: “Vibe coding small demo models is fine for exploring ideas”**
+
+The repository structure from the README:
+
+```
+morrison-runtime-governance/
+├── morrison_governance/
+│   ├── core.py · domains.py · trajectory.py · result.py
+│   ├── reachability.py        # Enforcement hierarchy
+│   ├── admissibility.py       # V4 structural admissibility
+│   ├── feasibility.py         # V4+ feasibility
+│   ├── stability.py           # V5 environment-perturbation stability
+│   ├── adversarial.py         # V5+ hard adversarial harness
+│   ├── forecasting.py         # V3 reachability forecasting
+│   ├── manifold.py            # V5 perturbation manifolds
+│   ├── planners.py            # Cross-model planner profiles
+│   ├── multiagent.py          # Multi-agent joint-trajectory governance
+│   ├── interception.py        # Fail-closed interception
+│   ├── redteam.py             # Assumption-driven red-team harness
+│   ├── integrations.py        # Platform adapters
+│   ├── LIMITATIONS.md         # Quantified failure surfaces
+│   └── test_*.py              # 18 deterministic suites — 171 cases
+├── CRITICAL_EVALUATION.md     # Skeptical self-assessment
+└── quickstart.py
+```
+
+This is not a demo. It is a modular codebase with dedicated modules for reachability, admissibility, feasibility, stability, adversarial testing, multi-agent coordination, fail-closed interception, and platform integration. It includes a self-critical evaluation and a quantified limitations document. The red-team harness attacks its own assumptions, not a fixed example corpus, and surfaces gaps deterministically.
+
+-----
+
+**Claim 5: “You need to understand the mathematical nuts and bolts of what you’re doing and be able to document it rigorously”**
+
+The framework’s theorem chain (from the NeurIPS paper, v9):
+
+```
+Theorem 1: Unsafe Trajectory Existence
+    → Theorem 2: Controlled Forward Invariance
+        → Theorem 3: Stability Invariant
+            → Theorem 4: Insufficiency of Behavioural Safety
+```
+
+The core invariant is formally stated:
+
+Safe ⟺ ∀ E ∈ ℰ, ℛ_E(t) ∩ Ω = ∅
+
+The Stability Invariant (Theorem 3) is strictly stronger than Controlled Forward Invariance (Theorem 2): it asserts that no admissible trajectory can become unsafe under any admissible perturbation, not just under fixed dynamics. Theorem 4 establishes that output-level methods cannot prevent Ω reachability — a formal proof of the insufficiency of behavioural safety.
+
+The framework is protected under UK Patent GB2600765.8. The UK Intellectual Property Office does not grant patents for work that lacks documented rigour.
+
+-----
+
+**Claim 6: “Sharing a folder link with images and videos shot on your phone isn’t something people will take seriously”**
+
+Since the dismissal:
+
+|Event                               |Outcome                                                              |
+|:-----------------------------------|:--------------------------------------------------------------------|
+|Grant proposal submitted            |Thinking Machines Lab — $100K                                        |
+|Technical convergence documented    |Former Google AI Strategy lead                                       |
+|LinkedIn engagement (dismissal post)|4,493 impressions, 123 comments, 85 profile viewers, 12 new followers|
+|Repository                          |Public, reproducible, cloneable                                      |
+
+People are taking it seriously. The delivery medium did not prevent the work from being evaluated elsewhere. It prevented it from being evaluated here.
+
+-----
+
+**Claim 7: “Leave the project where it is for now as an early exploratory attempt”**
+
+The project was not left where it was. Since the dismissal, the repository has been extended, the evaluation count has grown, the grant proposal has been submitted, and the enforcement hierarchy has been hardened. The evaluator’s advice was considered and declined on the basis of the evidence.
+
+-----
+
+These rebuttals are offered not as attacks on the evaluator, but as a factual record. Each claim in the email has a specific, verifiable counterpoint in the public repository. The reader can clone the repository and test every claim independently.
+
+-----
+
+## 5. What Was and Was Not Evaluated
 
 Based on the written dismissal, the evaluator did not engage with:
 
@@ -122,7 +370,7 @@ Based on the written dismissal, the evaluator did not engage with:
 |:-------------------------------------|:---------------------:|
 |The safety invariant                  |No                     |
 |The enforcement hierarchy             |No                     |
-|The empirical results                 |No                     |
+|The empirical results (129,857 evals) |No                     |
 |The cross-model validation            |No                     |
 |The adversarial harness               |No                     |
 |The patent claims                     |No                     |
@@ -133,18 +381,23 @@ Based on the written dismissal, the evaluator did not engage with:
 
 The dismissal focused on:
 
-|Element                                   |Addressed in dismissal?|
-|:-----------------------------------------|:---------------------:|
-|The delivery medium (phone)               |Yes — rejected         |
-|The credential set (no degree)            |Yes — rejected         |
-|The file format (folder link)             |Yes — rejected         |
-|The need for “mathematical nuts and bolts”|Yes — assumed absent   |
+|Element                                   |Addressed in dismissal?   |
+|:-----------------------------------------|:------------------------:|
+|The delivery medium (phone)               |Yes — rejected            |
+|The credential set (no degree)            |Yes — rejected            |
+|The file format (folder link)             |Yes — rejected            |
+|The need for “mathematical nuts and bolts”|Yes — assumed absent      |
+|API-level operation (not latent space)    |Yes — framed as limitation|
+
+The evaluator’s technical claim — that “you cannot implement the boundary constraints you’re describing with an API” and that the framework must “be embedded into the model itself” — represents a specific architectural position. The Morrison Framework’s design choice to operate at the executable-trajectory layer rather than the model-weight layer is not an omission. It is the architectural contribution. The governance layer was unchanged across GPT-4o, Qwen2.5, and Llama-3.1 precisely because it does not require access to the model’s latent space. Model-agnosticism is the feature, not the limitation.
+
+This is a legitimate technical disagreement. But it was not presented as a disagreement. It was presented as a disqualification.
 
 The gap between what was presented and what was addressed is the core data point.
 
 -----
 
-## 4. A Geometric Interpretation
+## 6. A Geometric Interpretation
 
 The Morrison Law of Cognitive Access offers a lens — not a proof — for understanding this pattern:
 
@@ -167,7 +420,7 @@ It is worth noting: this interpretation does not require attributing bad faith. 
 
 -----
 
-## 5. The Question This Raises
+## 7. The Question This Raises
 
 This is one case. One interaction. One institution. Generalising from a single data point is exactly the kind of overreach this document aims to avoid.
 
@@ -196,7 +449,7 @@ This case is insufficient to prove that pattern is widespread. But it is suffici
 
 -----
 
-## 6. What Happened After the Dismissal
+## 8. What Happened After the Dismissal
 
 |Event                                                 |Outcome                                                                                                   |
 |:-----------------------------------------------------|:---------------------------------------------------------------------------------------------------------|
@@ -210,7 +463,7 @@ These outcomes do not prove the framework is correct or important. They demonstr
 
 -----
 
-## 7. What This Case Study Is and Is Not
+## 9. What This Case Study Is and Is Not
 
 **This is:** a documented account of a specific evaluation failure, reconstructed from primary evidence, with a geometric interpretation offered as a hypothesis. It is a data point. It raises a question about evaluation structures in AI safety that should be examined further.
 
@@ -224,7 +477,7 @@ I would not dismiss someone saving my life because they are not a doctor. I do n
 
 -----
 
-## 8. The Open Question
+## 10. The Open Question
 
 If your evaluation function cannot recognise structural AI safety work because it was built from a phone by a solo founder — what else are you missing?
 
