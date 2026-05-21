@@ -62,6 +62,170 @@ This section exists so that technical readers can orient quickly. The framework 
 
 -----
 
+## Internal Alignment vs Runtime Governance
+
+The Morrison Framework is not mechanistic interpretability. It was never intended to operate inside the model’s latent space. This distinction is the central architectural fact of the framework and was communicated to the evaluator prior to the written dismissal.
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                                                              │
+│  INTERNAL ALIGNMENT / MECHANISTIC INTERPRETABILITY           │
+│                                                              │
+│  Goal:     Understand or govern internal latent cognition    │
+│  Operates: Inside the model's weight space and activations   │
+│  Requires: Access to model internals                         │
+│  Scope:    Model-specific                                    │
+│  Method:   Interpret, steer, or constrain latent             │
+│            representations during inference                  │
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  RUNTIME GOVERNANCE (Morrison Framework)                     │
+│                                                              │
+│  Goal:     Prevent catastrophic executable trajectories      │
+│  Operates: Between the planner and the execution environment │
+│  Requires: No access to model internals                      │
+│  Scope:    Model-agnostic by construction                    │
+│  Method:   Evaluate trajectory admissibility against Ω       │
+│            before any action reaches the tool runtime         │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+```
+
+These are different fields solving different problems at different layers. The framework does not claim to solve internal cognition alignment. It claims that catastrophic executable trajectories can be rendered operationally unreachable through runtime admissibility enforcement — regardless of which model produced the plan.
+
+-----
+
+## Why External Governance Exists Throughout Engineering
+
+The architectural pattern of an external controller governing an untrusted substrate is standard across computing and engineering:
+
+|Domain                  |External governance layer      |What it constrains             |
+|:-----------------------|:------------------------------|:------------------------------|
+|Operating systems       |Process isolation / permissions|Untrusted user processes       |
+|Virtualisation          |Hypervisor                     |Guest virtual machines         |
+|Network security        |Firewall / IDS / IPS           |Network traffic                |
+|Cloud infrastructure    |IAM policies                   |Resource access and permissions|
+|Runtime monitoring      |Execution monitors / sandboxes |Process behaviour              |
+|Aviation                |Supervisory control layers     |Flight control systems         |
+|Industrial systems      |External governors / PLCs      |Physical plant execution       |
+|Financial infrastructure|Transaction monitoring / limits|Automated trading / transfers  |
+
+The existence of a controller external to the substrate does not imply the controller is meaningless.
+
+The relevant question is not: “Is the controller internal?”
+
+The relevant question is: “What classes of catastrophic trajectories can it reliably prevent under bounded assumptions?”
+
+-----
+
+## Threat Model
+
+**Current target classes:**
+
+```
+════════════════════════════════════════════════════════════════
+  Unsafe executable tool trajectories
+  Catastrophic multi-step action chains
+  Delayed-intent attacks
+  Credential exfiltration (source→sink taint, incl. deferred)
+  Unauthorized financial execution
+  Shell injection / remote code execution
+  Privilege escalation / path traversal / sandbox escape
+  Data leakage (PII/PHI to external endpoints)
+  Multi-agent collusion (jointly-unsafe trajectories)
+  Recursive coercion trajectories
+  Unsafe crisis escalation / abandonment
+  Therapeutic impersonation / authority exploitation
+  Contextual drift under prolonged interaction
+  Memory contamination / recursive coercion
+  Indirect coercion / emotional isolation trajectories
+  Bounded adversarial perturbation environments (9 manifold families)
+════════════════════════════════════════════════════════════════
+```
+
+**The framework does NOT currently claim:**
+
+```
+════════════════════════════════════════════════════════════════
+  Universal AGI alignment
+  Latent-thought transparency
+  Unrestricted open-world guarantees
+  Full internal deception detection
+  Complete Ω coverage across arbitrary environments
+════════════════════════════════════════════════════════════════
+```
+
+-----
+
+## Observed vs Claimed
+
+**Observed:**
+
+|Property                         |Result                                                |
+|:--------------------------------|:-----------------------------------------------------|
+|Total evaluations                |129,857                                               |
+|False positives / False negatives|0 / 0 in current suites                               |
+|Cross-model governance stability |Unchanged across GPT-4o, Qwen2.5-0.5B/7B, Llama-3.1-8B|
+|Deterministic replay             |Byte-identical across runs                            |
+|V5 perturbation stability        |Bounded-ball robustness across 9 manifold families    |
+|V5+ adversarial harness          |240/240                                               |
+|Mental health adversarial harness|648 cases, precision 1.0000, recall 1.0000            |
+
+**Not claimed:**
+
+|Property                           |Status     |
+|:----------------------------------|:----------|
+|Universal guarantees               |Not claimed|
+|Infinite-domain safety             |Not claimed|
+|Solved alignment                   |Not claimed|
+|Unrestricted environment robustness|Not claimed|
+|Omniscient governance              |Not claimed|
+
+-----
+
+## Failure Surfaces
+
+|Failure surface                                 |Description                                                                 |
+|:-----------------------------------------------|:---------------------------------------------------------------------------|
+|Ω incompleteness                                |The forbidden region may not cover all catastrophic states.                 |
+|Hidden tool channels                            |Actions through channels not visible to the governance layer are ungoverned.|
+|Governance-layer bypass                         |If the agent circumvents the middleware, enforcement does not apply.        |
+|Unmodelled executable actions                   |Tool calls not represented in the trajectory extractor are invisible.       |
+|Environment drift outside ℰ                     |The V5 guarantee is bounded to tested perturbation manifolds.               |
+|Latent capabilities outside tested planners     |Planners with different output structures may require adapter updates.      |
+|Adversarial trajectories not in current suites  |Attack patterns not in current suites are not tested.                       |
+|Specification ambiguity                         |Ambiguity in Ω definitions can produce under- or over-enforcement.          |
+|Recursive agent interactions beyond tested depth|Deeply recursive multi-agent dynamics beyond tested depth are not covered.  |
+|Upstream marker misclassification               |The mental health domain assumes correct upstream marker attachment.        |
+
+These are published so that independent evaluators know exactly where to probe.
+
+-----
+
+## Why Runtime Governance Still Matters Even With Better Internal Alignment
+
+Runtime governance and internal alignment are complementary enforcement layers at different boundaries. Even if internal alignment were fully solved, runtime governance would remain necessary:
+
+```
+════════════════════════════════════════════════════════════════
+  Execution environments mutate after training.
+  Permissions drift over time.
+  APIs change without model retraining.
+  Infrastructure changes post-deployment.
+  Humans misconfigure systems.
+  Adversarial contexts emerge dynamically.
+  Tool definitions change without model knowledge.
+  Multi-agent interactions create emergent trajectories
+    not present in any single agent's training.
+  Regulatory requirements change post-deployment.
+════════════════════════════════════════════════════════════════
+```
+
+The Morrison Framework governs what happens after the model produces a plan and before that plan becomes an action. It does not replace internal alignment. It operates at the execution boundary.
+
+-----
+
 ## 1. The Timeline
 
 The sequence matters. This was not a single dismissive email. It was a multi-month evaluation that reversed its own trajectory.
@@ -130,6 +294,8 @@ At the time of the final dismissal, the Morrison Framework had:
   An adversarial red-team harness that surfaced and closed its own gaps
   Deterministic replay verified
   Sub-millisecond evaluation latency
+  Mental health adversarial harness: 648 cases,
+    precision 1.0000, recall 1.0000, accuracy 1.0000
   The entire codebase built, tested, and red-teamed from a phone
 ════════════════════════════════════════════════════════════════
 ```
